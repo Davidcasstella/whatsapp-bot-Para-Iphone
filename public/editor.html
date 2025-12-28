@@ -1,0 +1,768 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>📝 Editor de Mensajes - Outlet Tech Boyacá</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            color: white;
+            margin-bottom: 30px;
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+
+        .nav-buttons {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .nav-btn {
+            padding: 12px 24px;
+            background: white;
+            color: #667eea;
+            border: none;
+            border-radius: 8px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .nav-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+        }
+
+        .card {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+
+        .card h2 {
+            color: #667eea;
+            margin-bottom: 20px;
+            font-size: 1.5em;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            font-weight: bold;
+            color: #374151;
+            margin-bottom: 8px;
+        }
+
+        .form-group input,
+        .form-group textarea,
+        .form-group select {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e5e7eb;
+            border-radius: 8px;
+            font-size: 1em;
+            font-family: inherit;
+            transition: border-color 0.3s;
+        }
+
+        .form-group input:focus,
+        .form-group textarea:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .form-group textarea {
+            min-height: 200px;
+            resize: vertical;
+        }
+
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1em;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+            width: 100%;
+            margin-top: 10px;
+        }
+
+        .btn-primary {
+            background: #667eea;
+            color: white;
+        }
+
+        .btn-success {
+            background: #10b981;
+            color: white;
+        }
+
+        .btn-danger {
+            background: #ef4444;
+            color: white;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+
+        .grid-2 {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(500px, 1fr));
+            gap: 20px;
+        }
+
+        .alert {
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            display: none;
+        }
+
+        .alert-success {
+            background: #d1fae5;
+            color: #065f46;
+            border: 1px solid #10b981;
+        }
+
+        .alert-error {
+            background: #fee2e2;
+            color: #991b1b;
+            border: 1px solid #ef4444;
+        }
+
+        .preview-box {
+            background: #25D366;
+            color: white;
+            padding: 20px;
+            border-radius: 15px;
+            white-space: pre-wrap;
+            font-family: 'Segoe UI', sans-serif;
+            margin-top: 15px;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        .file-upload {
+            border: 2px dashed #667eea;
+            padding: 30px;
+            text-align: center;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .file-upload:hover {
+            background: #f3f4f6;
+        }
+
+        .file-upload input {
+            display: none;
+        }
+
+        .audio-controls {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-top: 15px;
+        }
+
+        .audio-info {
+            background: #e0e7ff;
+            padding: 10px;
+            border-radius: 8px;
+            flex: 1;
+        }
+
+        .info-note {
+            background: #fef3c7;
+            border-left: 4px solid #f59e0b;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 8px;
+        }
+
+        .info-note strong {
+            color: #92400e;
+        }
+
+        @media (max-width: 768px) {
+            .grid-2 {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>📝 Editor de Contenido del Bot</h1>
+            <p>Gestiona todos los mensajes y contenido - Cambios en tiempo real ⚡</p>
+        </div>
+
+        <div class="nav-buttons">
+            <button class="nav-btn" onclick="window.location.href='/'">
+                🏠 Volver al Panel
+            </button>
+            <button class="nav-btn" onclick="cargarDelServidor()">
+                ⬇️ Cargar del Servidor
+            </button>
+            <button class="nav-btn" onclick="guardarTodo()">
+                💾 Guardar Cambios
+            </button>
+        </div>
+
+        <div id="alertContainer"></div>
+
+        <!-- Información de la Empresa -->
+        <div class="card">
+            <h2>🏢 Información de la Empresa</h2>
+            <div class="grid-2">
+                <div class="form-group">
+                    <label>Nombre de la Empresa:</label>
+                    <input type="text" id="empresa_nombre" placeholder="Outlet Tech Boyacá">
+                </div>
+                <div class="form-group">
+                    <label>Teléfono de Contacto:</label>
+                    <input type="text" id="empresa_telefono" placeholder="305 2707907">
+                </div>
+                <div class="form-group">
+                    <label>Dirección:</label>
+                    <input type="text" id="empresa_direccion" placeholder="Calle 11a # 9-27, Tunja, Boyacá">
+                </div>
+                <div class="form-group">
+                    <label>Link de Google Maps:</label>
+                    <input type="text" id="empresa_maps" placeholder="https://maps.app.goo.gl/...">
+                </div>
+            </div>
+        </div>
+
+        <!-- Audio de Saludo -->
+        <div class="card">
+            <h2>🎤 Audio de Saludo</h2>
+            <div class="info-note">
+                <strong>💡 Nota:</strong> Sube tu audio de saludo (.ogg o .mp3). Se guardará automáticamente como saludo-daniela.ogg
+            </div>
+            
+            <div class="file-upload" onclick="document.getElementById('audioFile').click()">
+                <p>📁 Haz clic para subir archivo de audio</p>
+                <p style="font-size: 0.9em; color: #6b7280; margin-top: 10px;">
+                    Formatos: OGG, MP3 (máx. 5MB)
+                </p>
+                <input type="file" id="audioFile" accept=".ogg,.mp3,audio/*">
+            </div>
+            
+            <div class="audio-controls" id="audioControls" style="display: none;">
+                <audio controls id="audioPreview"></audio>
+                <div class="audio-info" id="audioInfo"></div>
+                <button class="btn btn-success" style="width: auto;" onclick="subirAudio()">
+                    ⬆️ Subir al Servidor
+                </button>
+                <button class="btn btn-danger" style="width: auto;" onclick="eliminarAudio()">
+                    🗑️ Cancelar
+                </button>
+            </div>
+            
+            <div id="audioActual" style="margin-top: 15px;"></div>
+        </div>
+
+        <!-- Menú Principal -->
+        <div class="card">
+            <h2>📋 Menú Principal</h2>
+            <div class="form-group">
+                <label>Mensaje de Bienvenida:</label>
+                <textarea id="menu_principal" placeholder="Soy Johana en que puedo ayudarte? 😊"></textarea>
+            </div>
+            <div class="preview-box" id="preview_menu">Vista previa...</div>
+        </div>
+
+        <!-- Listado de iPhones -->
+        <div class="card">
+            <h2>📱 Listado de iPhones (13 a 16 Pro Max)</h2>
+            <div class="info-note">
+                <strong>📝 Formato:</strong> Sin precios ni batería. Solo modelo, colores y almacenamiento.
+            </div>
+            <div class="form-group">
+                <label>Catálogo de iPhones:</label>
+                <textarea id="catalogo_iphones" style="min-height: 500px;"></textarea>
+            </div>
+            <div class="preview-box" id="preview_iphones">Vista previa...</div>
+        </div>
+
+        <!-- Accesorios para iPhone -->
+        <div class="card">
+            <h2>🔌 Accesorios para iPhone</h2>
+            <div class="form-group">
+                <label>Lista de Accesorios iPhone:</label>
+                <textarea id="accesorios_iphone" style="min-height: 400px;"></textarea>
+            </div>
+            <div class="preview-box" id="preview_acc_iphone">Vista previa...</div>
+        </div>
+
+        <!-- Listado de MacBooks -->
+        <div class="card">
+            <h2>💻 Listado de MacBooks por Procesador</h2>
+            <div class="info-note">
+                <strong>📝 Formato:</strong> Sin precios. Procesador, modelo, RAM, pantalla y almacenamiento.
+            </div>
+            <div class="form-group">
+                <label>Catálogo de MacBooks:</label>
+                <textarea id="catalogo_macbooks" style="min-height: 400px;"></textarea>
+            </div>
+            <div class="preview-box" id="preview_macbooks">Vista previa...</div>
+        </div>
+
+        <!-- Accesorios para MacBook -->
+        <div class="card">
+            <h2>💻 Accesorios para MacBook</h2>
+            <div class="form-group">
+                <label>Lista de Accesorios MacBook:</label>
+                <textarea id="accesorios_macbook" style="min-height: 300px;"></textarea>
+            </div>
+            <div class="preview-box" id="preview_acc_macbook">Vista previa...</div>
+        </div>
+
+        <!-- Compatibilidad -->
+        <div class="card">
+            <h2>📦 Compatibilidad de Accesorios</h2>
+            <div class="form-group">
+                <label>Información de Compatibilidad:</label>
+                <textarea id="compatibilidad"></textarea>
+            </div>
+            <div class="preview-box" id="preview_compat">Vista previa...</div>
+        </div>
+
+        <!-- Mensaje de Ubicación -->
+        <div class="card">
+            <h2>📍 Mensaje de Ubicación</h2>
+            <div class="form-group">
+                <label>Horario de Atención:</label>
+                <textarea id="horario"></textarea>
+            </div>
+        </div>
+
+        <!-- Configuración del Bot -->
+        <div class="card">
+            <h2>⚙️ Configuración del Bot</h2>
+            <div class="grid-2">
+                <div class="form-group">
+                    <label>Cooldown (minutos entre respuestas):</label>
+                    <input type="number" id="cooldown" placeholder="60" min="1" max="1440">
+                </div>
+                <div class="form-group">
+                    <label>Mensaje cuando usuario escribe texto libre:</label>
+                    <input type="text" id="msg_texto_libre" placeholder="Vale ya te respondo">
+                </div>
+            </div>
+        </div>
+
+        <button class="btn btn-success" onclick="guardarTodo()" style="font-size: 1.2em; padding: 15px;">
+            💾 Guardar Todos los Cambios (Sin Reiniciar Servidor)
+        </button>
+    </div>
+
+    <script>
+        const API_URL = window.location.hostname === 'localhost' 
+            ? 'http://localhost:3000' 
+            : `http://${window.location.hostname}:3000`;
+
+        function mostrarAlerta(mensaje, tipo = 'success') {
+            const container = document.getElementById('alertContainer');
+            const alert = document.createElement('div');
+            alert.className = `alert alert-${tipo}`;
+            alert.textContent = mensaje;
+            alert.style.display = 'block';
+            container.appendChild(alert);
+
+            setTimeout(() => {
+                alert.style.display = 'none';
+                alert.remove();
+            }, 5000);
+        }
+
+        // Cargar desde el servidor
+        async function cargarDelServidor() {
+            try {
+                const response = await fetch(`${API_URL}/get-config`);
+                const config = await response.json();
+                aplicarConfiguracion(config);
+                localStorage.setItem('botConfig', JSON.stringify(config));
+                mostrarAlerta('✅ Configuración cargada desde el servidor', 'success');
+            } catch (error) {
+                mostrarAlerta('⚠️ No se pudo conectar con el servidor', 'error');
+                cargarConfiguracionLocal();
+            }
+        }
+
+        // Cargar configuración local
+        function cargarConfiguracionLocal() {
+            const config = JSON.parse(localStorage.getItem('botConfig') || '{}');
+            aplicarConfiguracion(config);
+        }
+
+        // Aplicar configuración a los campos
+        function aplicarConfiguracion(config) {
+            document.getElementById('empresa_nombre').value = config.empresa_nombre || 'Outlet Tech Boyacá';
+            document.getElementById('empresa_telefono').value = config.empresa_telefono || '305 2707907';
+            document.getElementById('empresa_direccion').value = config.empresa_direccion || 'Calle 11a # 9-27, Tunja, Boyacá';
+            document.getElementById('empresa_maps').value = config.empresa_maps || 'https://maps.app.goo.gl/tGE9JvRz49DyYrAk7';
+            
+            document.getElementById('menu_principal').value = config.menu_principal || `Soy Johana, ¿en qué puedo ayudarte? 😊
+
+1. 📱 Listado de iPhone
+2. 🔌 Accesorios para iPhone
+3. 💻 Listado de MacBook
+4. 📍 Ubicación del negocio
+
+Escribe el número de tu opción`;
+
+            document.getElementById('catalogo_iphones').value = config.catalogo_iphones || `📱 *LISTADO DE iPHONES*
+
+1. iPhone 13 — 128 GB
+   Colores: Negro, Blanco Estelar, Azul, Rosa, Rojo, Verde
+
+2. iPhone 13 Mini — 128 GB
+   Colores: Negro, Blanco Estelar, Azul, Rosa, Rojo, Verde
+
+3. iPhone 13 Pro — 256 GB
+   Colores: Grafito, Plata, Oro, Azul Sierra, Verde Alpino
+
+4. iPhone 13 Pro Max — 256 GB
+   Colores: Grafito, Plata, Oro, Azul Sierra, Verde Alpino
+
+5. iPhone 14 — 128 GB
+   Colores: Negro, Blanco Estelar, Azul, Morado, Rojo, Amarillo
+
+6. iPhone 14 Plus — 128 GB
+   Colores: Negro, Blanco Estelar, Azul, Morado, Rojo, Amarillo
+
+7. iPhone 14 Pro — 256 GB
+   Colores: Negro Espacial, Plata, Oro, Morado Oscuro
+
+8. iPhone 14 Pro Max — 256 GB
+   Colores: Negro Espacial, Plata, Oro, Morado Oscuro
+
+9. iPhone 15 — 128 GB
+   Colores: Negro, Azul, Verde, Amarillo, Rosa
+
+10. iPhone 15 Plus — 128 GB
+    Colores: Negro, Azul, Verde, Amarillo, Rosa
+
+11. iPhone 15 Pro — 256 GB
+    Colores: Titanio Negro, Titanio Blanco, Titanio Azul, Titanio Natural
+
+12. iPhone 15 Pro Max — 512 GB
+    Colores: Titanio Negro, Titanio Blanco, Titanio Azul, Titanio Natural
+
+13. iPhone 16 — 256 GB
+    Colores: Negro, Blanco, Rosa, Azul Ultramarino, Verde Azulado
+
+14. iPhone 16 Plus — 256 GB
+    Colores: Negro, Blanco, Rosa, Azul Ultramarino, Verde Azulado
+
+15. iPhone 16 Pro — 512 GB
+    Colores: Titanio Negro, Titanio Blanco, Titanio Natural, Titanio Desierto
+
+16. iPhone 16 Pro Max — 1 TB
+    Colores: Titanio Negro, Titanio Blanco, Titanio Natural, Titanio Desierto
+
+📞 Para precios y disponibilidad escríbenos al ${config.empresa_telefono || '305 2707907'}`;
+
+            document.getElementById('accesorios_iphone').value = config.accesorios_iphone || `🍎 *ACCESORIOS APPLE – IPHONE*
+
+🔋 *Carga y energía*
+• Adaptador de corriente Apple USB-C (20W / 30W / 35W)
+• Cable Apple USB-C a Lightning
+• Cable Apple USB-C a USB-C
+• MagSafe Charger Apple
+• Batería MagSafe Apple
+
+🛡️ *Protección*
+• Funda Apple Silicone Case
+• Funda Apple Clear Case
+• Funda Apple Leather Case
+• Vidrio templado premium
+• Protector de cámara iPhone
+
+🎧 *Audio*
+• AirPods (2.ª generación)
+• AirPods (3.ª generación)
+• AirPods Pro (2.ª generación)
+• AirPods Max
+
+🧲 *MagSafe*
+• Funda MagSafe
+• Wallet MagSafe
+• Soporte MagSafe para carro
+• Cargador MagSafe Duo
+
+📞 Para precios y disponibilidad contacta: ${config.empresa_telefono || '305 2707907'}`;
+
+            document.getElementById('catalogo_macbooks').value = config.catalogo_macbooks || `💻 *LISTADO DE MACBOOKS POR PROCESADOR*
+
+1. Core i5
+   Modelo 2019–2020, RAM 8 GB, pantalla 13", 256 GB SSD
+
+2. Core i7
+   Modelo 2019–2020, RAM 16 GB, pantalla 15" o 16", 512 GB SSD
+
+3. Core i9
+   Modelo 2019–2020, RAM 16 GB, pantalla 16", 1 TB SSD
+
+4. M1
+   Modelo 2020, RAM 8 GB, pantalla 13", 256 GB SSD
+
+5. M1 Pro
+   Modelo 2021, RAM 16 GB, pantalla 14", 512 GB SSD
+
+6. M2
+   Modelo 2022, RAM 8 GB, pantalla 13", 256 GB SSD
+
+7. M2 Air
+   Modelo 2022–2023, RAM 8 GB, pantalla 13" o 15", 256 GB SSD
+
+8. M2 Pro
+   Modelo 2023, RAM 16 GB, pantalla 14" o 16", 512 GB SSD
+
+9. M4
+   Modelo 2024, RAM 16 GB, pantalla 14", 512 GB SSD
+
+10. M4 Air
+    Modelo 2024, RAM 8 GB, pantalla 13" o 15", 256 GB SSD
+
+11. M4 Pro
+    Modelo 2024, RAM 18 GB, pantalla 14" o 16", 512 GB SSD
+
+📞 Para precios y disponibilidad escríbenos al ${config.empresa_telefono || '305 2707907'}`;
+
+            document.getElementById('accesorios_macbook').value = config.accesorios_macbook || `💻 *ACCESORIOS APPLE – MACBOOK*
+
+🔌 *Carga y conectividad*
+• Adaptador de corriente Apple USB-C
+• Cable de carga USB-C Apple
+• Cable MagSafe 3 Apple
+• Adaptador multipuerto USB-C Apple
+• Adaptador USB-C a HDMI Apple
+
+⌨️ *Teclado y control*
+• Magic Keyboard
+• Magic Keyboard con Touch ID
+• Magic Mouse
+• Magic Trackpad
+
+🛡️ *Protección y uso*
+• Funda Apple Leather Sleeve
+• Funda Apple Sleeve
+• Protector de teclado MacBook
+• Protector de pantalla MacBook
+
+📞 Para precios y disponibilidad contacta: ${config.empresa_telefono || '305 2707907'}`;
+
+            document.getElementById('compatibilidad').value = config.compatibilidad || `📦 *COMPATIBILIDAD*
+
+iPhone 11 / 12 / 13 / 14 / 15 / 16
+MacBook Air M1 / M2 / M3 / M4
+MacBook Pro M1 / M2 / M3 / M4`;
+
+            document.getElementById('horario').value = config.horario || `⏰ *Horario*
+Lunes a Sábado: 7:00 AM - 8:00 PM
+Domingos: 8:00 AM - 11:00 AM`;
+
+            document.getElementById('cooldown').value = config.cooldown || '60';
+            document.getElementById('msg_texto_libre').value = config.msg_texto_libre || 'Vale ya te respondo';
+
+            actualizarVistasPrevia();
+        }
+
+        // Actualizar vistas previas
+        function actualizarVistasPrevia() {
+            document.getElementById('preview_menu').textContent = document.getElementById('menu_principal').value;
+            document.getElementById('preview_iphones').textContent = document.getElementById('catalogo_iphones').value;
+            document.getElementById('preview_acc_iphone').textContent = document.getElementById('accesorios_iphone').value;
+            document.getElementById('preview_macbooks').textContent = document.getElementById('catalogo_macbooks').value;
+            document.getElementById('preview_acc_macbook').textContent = document.getElementById('accesorios_macbook').value;
+            document.getElementById('preview_compat').textContent = document.getElementById('compatibilidad').value;
+        }
+
+        // Guardar configuración
+        async function guardarTodo() {
+            const config = {
+                empresa_nombre: document.getElementById('empresa_nombre').value,
+                empresa_telefono: document.getElementById('empresa_telefono').value,
+                empresa_direccion: document.getElementById('empresa_direccion').value,
+                empresa_maps: document.getElementById('empresa_maps').value,
+                menu_principal: document.getElementById('menu_principal').value,
+                catalogo_iphones: document.getElementById('catalogo_iphones').value,
+                accesorios_iphone: document.getElementById('accesorios_iphone').value,
+                catalogo_macbooks: document.getElementById('catalogo_macbooks').value,
+                accesorios_macbook: document.getElementById('accesorios_macbook').value,
+                compatibilidad: document.getElementById('compatibilidad').value,
+                horario: document.getElementById('horario').value,
+                cooldown: document.getElementById('cooldown').value,
+                msg_texto_libre: document.getElementById('msg_texto_libre').value
+            };
+
+            localStorage.setItem('botConfig', JSON.stringify(config));
+
+            try {
+                const response = await fetch(`${API_URL}/update-config`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(config)
+                });
+
+                if (response.ok) {
+                    mostrarAlerta('✅ Configuración guardada y aplicada en tiempo real. ¡Sin reiniciar!', 'success');
+                } else {
+                    mostrarAlerta('⚠️ Guardado localmente. Verifica conexión con el servidor.', 'error');
+                }
+            } catch (error) {
+                mostrarAlerta('⚠️ Guardado localmente. Verifica que el servidor esté activo.', 'error');
+            }
+        }
+
+        // Manejo de audio
+        let archivoAudio = null;
+
+        document.getElementById('audioFile').addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (file) {
+                archivoAudio = file;
+                const url = URL.createObjectURL(file);
+                document.getElementById('audioPreview').src = url;
+                document.getElementById('audioControls').style.display = 'flex';
+                document.getElementById('audioInfo').innerHTML = `
+                    <strong>Archivo:</strong> ${file.name}<br>
+                    <strong>Tamaño:</strong> ${(file.size / 1024).toFixed(2)} KB<br>
+                    <span style="color: #f59e0b;">⚠️ Presiona "Subir al Servidor" para guardar</span>
+                `;
+            }
+        });
+
+        // Subir audio al servidor
+        async function subirAudio() {
+            if (!archivoAudio) {
+                mostrarAlerta('⚠️ No hay archivo seleccionado', 'error');
+                return;
+            }
+
+            const formData = new FormData();
+            formData.append('audio', archivoAudio);
+
+            try {
+                mostrarAlerta('⏳ Subiendo audio al servidor...', 'success');
+                
+                const response = await fetch(`${API_URL}/upload-audio`, {
+                    method: 'POST',
+                    body: formData
+                });
+
+                const result = await response.json();
+
+                if (response.ok) {
+                    mostrarAlerta('✅ Audio actualizado correctamente en el servidor', 'success');
+                    document.getElementById('audioInfo').innerHTML = `
+                        <strong>Archivo:</strong> ${archivoAudio.name}<br>
+                        <strong>Tamaño:</strong> ${(archivoAudio.size / 1024).toFixed(2)} KB<br>
+                        <span style="color: #10b981;">✅ Guardado en el servidor</span>
+                    `;
+                    verificarAudioActual();
+                } else {
+                    mostrarAlerta('❌ Error al subir audio: ' + result.error, 'error');
+                }
+            } catch (error) {
+                mostrarAlerta('❌ Error de conexión: ' + error.message, 'error');
+            }
+        }
+
+        // Verificar audio actual en el servidor
+        async function verificarAudioActual() {
+            try {
+                const response = await fetch(`${API_URL}/check-audio`);
+                const data = await response.json();
+
+                const audioActualDiv = document.getElementById('audioActual');
+                
+                if (data.exists) {
+                    const fecha = new Date(data.modified).toLocaleString('es-CO');
+                    audioActualDiv.innerHTML = `
+                        <div style="background: #d1fae5; padding: 15px; border-radius: 8px; border-left: 4px solid #10b981;">
+                            <strong style="color: #065f46;">✅ Audio actual en el servidor:</strong><br>
+                            <span style="color: #047857;">
+                                Tamaño: ${(data.size / 1024).toFixed(2)} KB<br>
+                                Última modificación: ${fecha}
+                            </span>
+                        </div>
+                    `;
+                } else {
+                    audioActualDiv.innerHTML = `
+                        <div style="background: #fee2e2; padding: 15px; border-radius: 8px; border-left: 4px solid #ef4444;">
+                            <strong style="color: #991b1b;">⚠️ No hay audio en el servidor</strong><br>
+                            <span style="color: #991b1b;">Sube un archivo para activar el saludo de voz</span>
+                        </div>
+                    `;
+                }
+            } catch (error) {
+                console.log('No se pudo verificar audio:', error.message);
+            }
+        }
+
+        function eliminarAudio() {
+            document.getElementById('audioFile').value = '';
+            document.getElementById('audioControls').style.display = 'none';
+            archivoAudio = null;
+            mostrarAlerta('Audio cancelado', 'success');
+        }
+
+        // Actualizar vistas en tiempo real
+        document.getElementById('menu_principal').addEventListener('input', actualizarVistasPrevia);
+        document.getElementById('catalogo_iphones').addEventListener('input', actualizarVistasPrevia);
+        document.getElementById('accesorios_iphone').addEventListener('input', actualizarVistasPrevia);
+        document.getElementById('catalogo_macbooks').addEventListener('input', actualizarVistasPrevia);
+        document.getElementById('accesorios_macbook').addEventListener('input', actualizarVistasPrevia);
+        document.getElementById('compatibilidad').addEventListener('input', actualizarVistasPrevia);
+
+        // Cargar al inicio
+        window.onload = function() {
+            cargarDelServidor();
+            verificarAudioActual();
+        };
+    </script>
+</body>
+</html>
